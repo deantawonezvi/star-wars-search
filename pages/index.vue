@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @keyup.esc="closeResults" @keyup.enter="searchKeyword">
     <CBox
       v-bind="mainStyles[colorMode]"
       d="flex"
@@ -9,7 +9,6 @@
       justify-content="center"
     >
       <CFlex justify="center" direction="column" align="center">
-
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="200"
@@ -23,22 +22,41 @@
           </g>
         </svg>
 
-        <CBox
-          w="40vw"
-          mb="3"
-        >
+        <CBox w="40vw" mb="3">
+          <CInput v-model="chosen" placeholder="Search" />
 
-          <CInput v-model='chosen' placeholder="Search" />
+          <transition name="fade">
+          <CBox
+            v-if="showModal"
+            border-width="1px"
+            rounded="lg"
+            overflow="hidden"
+            box-shadow="sm"
+            p="5"
+            mt="2"
+          >
+            <p>Search Results: {{ searchResults.length }}</p>
+            <hr />
+            <div>
+              <NuxtLink v-for="person in searchResults"
+                        :key="person.name" :to=person.name>
 
-          <CBox v-if='showModal' border-width="1px" rounded="lg" overflow="hidden" box-shadow="sm" p="5" mt='2'>
-            <p>Chosen element: {{ chosen }}</p>
-            <hr>
-            {{searchResults}}
+              <CPseudoBox
+                mt="2"
+                p="3"
+                :_hover="{ bg: 'black', color: 'white', rounded: 'lg' }"
+              >
+                  {{ person.name }}
 
+              </CPseudoBox>
+              </NuxtLink>
+
+            </div>
           </CBox>
+          </transition>
         </CBox>
 
-        <hr>
+        <hr />
         <CBox mb="3">
           <CIconButton
             mr="3"
@@ -48,7 +66,6 @@
             } mode`"
             @click="toggleColorMode"
           />
-
         </CBox>
       </CFlex>
     </CBox>
@@ -56,18 +73,13 @@
 </template>
 
 <script lang="js">
-import {
-  CBox,
-  CIconButton,
-  CFlex,
-  CInput,
-} from '@chakra-ui/vue'
+import { CBox, CFlex, CIconButton, CInput,CPseudoBox } from '@chakra-ui/vue'
 import 'vue-simple-suggest/dist/styles.css'
-import {gql} from 'graphql-tag'
+import { gql } from 'graphql-tag'
 
 const CHARACTERS_BY_NAME_QUERY = gql`
-    query Person($name:String!) {
-        person(name:$name) {
+    query People($name:String!) {
+        peopleByKeyWord(name:$name) {
             name,
             height,
             mass,
@@ -84,6 +96,7 @@ export default {
     CIconButton,
     CFlex,
     CInput,
+    CPseudoBox
 
   },
   inject: ['$chakraColorMode', '$toggleColorMode'],
@@ -101,7 +114,7 @@ export default {
         }
       },
       chosen:'',
-      searchResults:'',
+      searchResults:[],
 
     }
   },
@@ -140,9 +153,7 @@ export default {
 
         if (res) {
           this.loading = false;
-          const  results  = res.data.person;
-          this.searchResults = results;
-          console.log(results)
+          this.searchResults = res.data.peopleByKeyWord;
         }
       }catch (err) {
         this.loading = false;
@@ -153,7 +164,18 @@ export default {
       this.showModal = true;
 
 
+    },
+    closeResults() {
+      this.showModal = false
     }
   }
 }
 </script>
+<style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

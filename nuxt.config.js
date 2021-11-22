@@ -48,7 +48,7 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: 'https://star-wars-api.deant.work/graphql',
+        httpEndpoint: 'http://localhost:3002/graphql',
       },
     },
   },
