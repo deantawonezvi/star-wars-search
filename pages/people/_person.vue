@@ -11,8 +11,8 @@
       <CFlex justify="center" direction="column" align="center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="200"
-          height="200"
+          width="100"
+          height="100"
           viewBox="0 0 192.756 192.756"
         >
           <g fill-rule="evenodd" clip-rule="evenodd">
@@ -22,41 +22,36 @@
           </g>
         </svg>
 
-        <search/>
-        <hr />
-        <CBox mb="3">
-          <CIconButton
-            mr="3"
-            :icon="colorMode === 'light' ? 'moon' : 'sun'"
-            :aria-label="`Switch to ${
-              colorMode === 'light' ? 'dark' : 'light'
-            } mode`"
-            @click="toggleColorMode"
-          />
-        </CBox>
+
+        {{ $route.params.person }}
       </CFlex>
     </CBox>
-
   </div>
 </template>
 
-<script lang="js">
-import { CBox, CFlex, CIconButton } from '@chakra-ui/vue'
-import Search from '../components/Search'
+<script>
+import { gql } from 'graphql-tag'
+import { CBox } from '@chakra-ui/vue'
+const GET_PERSON_QUERY = gql`
+  query Person($name: String!) {
+    person(name: $name) {
+      name
+      height
+      mass
+      gender
+      homeworld
+    }
+  }
+`
 
 export default {
-  name: 'App',
+  name: 'Person',
   components: {
     CBox,
-    CIconButton,
-    CFlex,
-    Search
-
   },
-  inject: ['$chakraColorMode', '$toggleColorMode'],
+  inject: ['$chakraColorMode'],
   data () {
     return {
-      showModal: false,
       mainStyles: {
         dark: {
           bg: 'gray.700',
@@ -66,30 +61,33 @@ export default {
           bg: 'white',
           color: 'gray.900'
         }
-      },
-      chosen:'',
-      searchResults:[],
-
+      }
     }
   },
+
   computed: {
     colorMode () {
       return this.$chakraColorMode()
-    },
-    theme () {
-      return this.$chakraTheme()
-    },
-    toggleColorMode () {
-      return this.$toggleColorMode
     }
-  }
+  },
+
+  async asyncData({ app, params }) {
+    const client = app.apolloProvider.defaultClient
+
+    const res = await client.query({
+      query: GET_PERSON_QUERY,
+      variables: {
+        name: params.person,
+      },
+    })
+
+    const { person } = res.data
+    console.log(person)
+    return {
+      person,
+    }
+  },
 }
 </script>
-<style>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-</style>
+
+<style scoped></style>
