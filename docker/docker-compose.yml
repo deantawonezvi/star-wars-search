@@ -1,28 +1,28 @@
 version: '3.7'
 
 services:
-  star-wars-client:
-    container_name: star-wars-client
+  star-wars-search:
+    container_name: star-wars-search
     restart: unless-stopped
-    image: ghcr.io/deantawonezvi/star-wars-client:${BRANCH}-${APP_VERSION}
+    image: ghcr.io/deantawonezvi/star-wars-search:${BRANCH}-${APP_VERSION}
     networks:
       - proxy
     expose:
       - 3000
     labels:
-      ##- traefik.http.routers.star-wars-client.rule=Host(`star-wars-client.deant.work`) || Host(`www.star-wars.deant.work`)
+      ##- traefik.http.routers.star-wars-search.rule=Host(`star-wars-search.deant.work`) || Host(`www.star-wars.deant.work`)
       ##Set the lowest routing priority == 1
       ##This will solve the overlap with api routes
-      ##- traefik.http.routers.star-wars-client.priority=1
+      ##- traefik.http.routers.star-wars-search.priority=1
       ##HTTPS
       - "traefik.enable=true"
-      - "traefik.http.routers.star-wars-client.entrypoints=websecure"
-      - "traefik.http.routers.star-wars-client.rule=Host(`star-wars.deant.work`)"
-      - "traefik.http.middlewares.star-wars-client-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.star-wars-client-secure.entrypoints=websecure"
-      - "traefik.http.routers.star-wars-client-secure.rule=Host(`star-wars.deant.work`)"
-      - "traefik.http.routers.star-wars-client-secure.tls=true"
-      - "traefik.http.routers.star-wars-client-secure.tls.certresolver=http"
+      - "traefik.http.routers.star-wars-search.entrypoints=websecure"
+      - "traefik.http.routers.star-wars-search.rule=Host(`star-wars.deant.work`)"
+      - "traefik.http.middlewares.star-wars-search-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.star-wars-search-secure.entrypoints=websecure"
+      - "traefik.http.routers.star-wars-search-secure.rule=Host(`star-wars.deant.work`)"
+      - "traefik.http.routers.star-wars-search-secure.tls=true"
+      - "traefik.http.routers.star-wars-search-secure.tls.certresolver=http"
       - "traefik.docker.network=proxy"
     env_file:
       - .env
