@@ -17,10 +17,10 @@ services:
       ##HTTPS
       - "traefik.enable=true"
       - "traefik.http.routers.star-wars-search.entrypoints=websecure"
-      - "traefik.http.routers.star-wars-search.rule=Host(`star-wars.deant.work`)"
+      - "traefik.http.routers.star-wars-search.rule=Host(`star-wars-search.deant.work`)"
       - "traefik.http.middlewares.star-wars-search-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.star-wars-search-secure.entrypoints=websecure"
-      - "traefik.http.routers.star-wars-search-secure.rule=Host(`star-wars.deant.work`)"
+      - "traefik.http.routers.star-wars-search-secure.rule=Host(`star-wars-search.deant.work`)"
       - "traefik.http.routers.star-wars-search-secure.tls=true"
       - "traefik.http.routers.star-wars-search-secure.tls.certresolver=http"
       - "traefik.docker.network=proxy"
