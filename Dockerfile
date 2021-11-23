@@ -1,19 +1,16 @@
-# Dockerfile
-
-# base image
-FROM node:lts
-
-# create & set working directory
-RUN mkdir -p /usr/src
-WORKDIR /usr/src
-
-# copy source files
-COPY . /usr/src
-
-# install dependencies
+FROM node:lts AS builder
+WORKDIR /app
+COPY ./package.json ./
 RUN npm install
-
-# start app
+COPY . .
 RUN npm run build
+
+
+FROM node:lts-alpine
+WORKDIR /app
+COPY --from=builder /app ./
+ENV HOST 0.0.0.0
+ENV PORT 3000
+
 EXPOSE 3000
-CMD npm run start
+CMD ["npm", "start"]

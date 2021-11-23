@@ -8,12 +8,10 @@ services:
     networks:
       - proxy
     labels:
-      ##- traefik.http.routers.star-wars-search.rule=Host(`star-wars-search.deant.work`) || Host(`www.star-wars.deant.work`)
       ##Set the lowest routing priority == 1
       ##This will solve the overlap with api routes
       ##- traefik.http.routers.star-wars-search.priority=1
       ##HTTPS
-      - "traefik.enable=true"
       - "traefik.http.routers.star-wars-search.entrypoints=websecure"
       - "traefik.http.routers.star-wars-search.rule=Host(`star-wars-search.deant.work`)"
       - "traefik.http.middlewares.star-wars-search-https-redirect.redirectscheme.scheme=https"
@@ -21,7 +19,6 @@ services:
       - "traefik.http.routers.star-wars-search-secure.rule=Host(`star-wars-search.deant.work`)"
       - "traefik.http.routers.star-wars-search-secure.tls=true"
       - "traefik.http.routers.star-wars-search-secure.tls.certresolver=http"
-      - "traefik.docker.network=proxy"
     env_file:
       - .env
 
