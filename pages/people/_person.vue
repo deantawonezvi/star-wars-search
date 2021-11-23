@@ -8,7 +8,7 @@
       flex-dir="column"
       justify-content="center"
     >
-      <CFlex justify="center" direction="column" align="center">
+      <CFlex  justify="center" direction="column" align="center">
         <NuxtLink to='/'>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -24,6 +24,7 @@
           </svg>
         </NuxtLink>
         <CBox
+          v-if='queryError == false'
           border-width="1px"
           rounded="lg"
           overflow="hidden"
@@ -37,6 +38,21 @@
           <hr>
 
         </CBox>
+        <CBox
+          v-if='queryError == true'
+          border-width="1px"
+          rounded="lg"
+          overflow="hidden"
+          box-shadow="sm"
+          w='20vw'
+          p="5"
+          mt="2">
+          <h1 class='character-header'>
+            This one could not be found!
+          </h1>
+
+        </CBox>
+
 
 
 
@@ -67,6 +83,31 @@ export default {
     CBox,
   },
   inject: ['$chakraColorMode'],
+
+  async asyncData({ app, params }) {
+    const client = app.apolloProvider.defaultClient
+    let queryError = false;
+
+    try{
+      const res = await client.query({
+        query: GET_PERSON_QUERY,
+        variables: {
+          name: params.person,
+        },
+      })
+
+      const { person } = res.data
+      console.log(person)
+      return {
+        person,
+        queryError
+      }
+    } catch (err) {
+      queryError = true
+      return {queryError}
+    }
+
+  },
   data () {
     return {
       mainStyles: {
@@ -78,30 +119,13 @@ export default {
           bg: 'white',
           color: 'gray.900'
         }
-      }
+      },
     }
   },
 
   computed: {
     colorMode () {
       return this.$chakraColorMode()
-    }
-  },
-
-  async asyncData({ app, params }) {
-    const client = app.apolloProvider.defaultClient
-
-    const res = await client.query({
-      query: GET_PERSON_QUERY,
-      variables: {
-        name: params.person,
-      },
-    })
-
-    const { person } = res.data
-    console.log(person)
-    return {
-      person,
     }
   },
 }

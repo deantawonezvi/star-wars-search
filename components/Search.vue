@@ -8,7 +8,7 @@
     <div v-if='loading'>
       Loading...
     </div>
-    <CInput v-model="searchItem" placeholder="Search" @click="showResults" @keyup.esc="closeResults" @keyup.enter="searchKeyword" />
+    <CInput v-model="searchItem" focus-border-color="black" placeholder="Search" @click="showResults" @keyup.esc="closeResults" @keyup.enter="searchKeyword" />
 
 
     <transition name="fade">
