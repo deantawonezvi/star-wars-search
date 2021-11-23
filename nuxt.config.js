@@ -17,6 +17,7 @@ export default {
   },
 
   css: [
+    '@/assets/scss/search.scss'
   ],
 
   plugins: [
@@ -27,6 +28,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
+    '@nuxtjs/google-fonts',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -66,5 +68,22 @@ export default {
       description: 'Star Wars Characters Search'
     }
   },
+
+  googleFonts: {
+    prefetch: true,
+    preconnect: true,
+    preload: true,
+    families: {
+      Lato: [300, 500, 700],
+      Inter: [300, 500, 700],
+      'Poller+One': [300, 500, 700],
+    },
+  },
+
+  loading:{
+    continuous: true
+  }
+
+
 
 }

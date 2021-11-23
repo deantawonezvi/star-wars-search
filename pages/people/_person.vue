@@ -31,7 +31,11 @@
           w='20vw'
           p="5"
           mt="2">
-          {{ person.name }}
+          <h1 class='character-header'>
+            {{ person.name }}
+          </h1>
+          <hr>
+
         </CBox>
 
 
@@ -103,4 +107,12 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.character-header{
+  font-family: 'DeathStar', serif !important;
+  font-size: xx-large;
+}
+.text{
+  font-family: 'Inter', serif !important;
+}
+</style>

@@ -21,7 +21,7 @@
         p="5"
         mt="2"
       >
-        <p>Search Results: {{ searchResults.length }}</p>
+        <p class='search'>Search Results: {{ searchResults.length }}</p>
         <hr />
         <div>
           <NuxtLink
@@ -37,7 +37,7 @@
               :_hover="{ bg: 'black', color: 'white', rounded: 'lg' }"
             >
             <span v-if='person.history'>🕒️</span>
-              {{ person.name }}
+              <span class='search'>{{ person.name }}</span>
             </CPseudoBox>
           </NuxtLink>
         </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="js">
-import { CBox, CInput,CPseudoBox,CIcon } from '@chakra-ui/vue'
+import { CBox, CInput,CPseudoBox } from '@chakra-ui/vue'
 import { gql } from 'graphql-tag'
 import _ from 'lodash'
 
@@ -169,6 +169,9 @@ export default {
 </script>
 
 <style scoped>
+.search{
+  font-family: 'Inter', serif !important;
+}
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
