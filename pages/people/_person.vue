@@ -8,8 +8,8 @@
       flex-dir="column"
       justify-content="center"
     >
-      <CFlex  justify="center" direction="column" align="center">
-        <NuxtLink to='/'>
+      <CFlex justify="center" direction="column" align="center">
+        <NuxtLink to="/">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="100"
@@ -24,57 +24,59 @@
           </svg>
         </NuxtLink>
         <CBox
-          v-if='queryError == false'
+          v-if="queryError == false"
           border-width="1px"
           rounded="lg"
           overflow="hidden"
           box-shadow="sm"
-          w='20vw'
+          :width="[
+            '90vw', // base
+            '90vw', // 480px upwards
+            '50vw', // 768px upwards
+            '40vw', // 992px upwards
+          ]"
           p="5"
-          mt="2">
-          <h1 class='character-header'>
+          mt="2"
+        >
+          <h1 class="character-header">
             {{ person.name }}
           </h1>
-          <hr>
+          <hr />
           <p>📏</p>
-          <h3 class='text'>Height: {{person.height}}</h3>
-          <br>
+          <h3 class="text">Height: {{ person.height }}</h3>
+          <br />
           <p>⚖️</p>
-          <h3 class='text'>Mass: {{person.mass}}</h3>
-          <br>
+          <h3 class="text">Mass: {{ person.mass }}</h3>
+          <br />
 
-          <p v-if='person.gender === "male"'>🧑🏽</p>
-          <p v-else-if='person.gender === "female"'>👧🏽</p>
-          <p v-else-if='person.gender === "n/a"'>🤖</p>
-          <p v-else-if='person.gender === "none"'>🧝🏽‍♀️</p>
+          <p v-if="person.gender === 'male'">🧑🏽</p>
+          <p v-else-if="person.gender === 'female'">👧🏽</p>
+          <p v-else-if="person.gender === 'n/a'">🤖</p>
+          <p v-else-if="person.gender === 'none'">🧝🏽‍♀️</p>
           <p v-else>👤</p>
-          <h3 class='text'>Gender: {{person.gender}}</h3>
+          <h3 class="text">Gender: {{ person.gender }}</h3>
 
-          <br>
+          <br />
           <p>🌐</p>
-          <h3 class='text'>Homeworld: {{person.homeworld}}</h3>
-
-
+          <h3 class="text">Homeworld: {{ person.homeworld }}</h3>
         </CBox>
         <CBox
-          v-if='queryError == true'
+          v-if="queryError == true"
           border-width="1px"
           rounded="lg"
           overflow="hidden"
           box-shadow="sm"
-          w='20vw'
+          :width="[
+            '90vw', // base
+            '90vw', // 480px upwards
+            '50vw', // 768px upwards
+            '40vw', // 992px upwards
+          ]"
           p="5"
-          mt="2">
-          <h1 class='character-header'>
-            This one could not be found!
-          </h1>
-
+          mt="2"
+        >
+          <h1 class="character-header">This one could not be found!</h1>
         </CBox>
-
-
-
-
-
       </CFlex>
     </CBox>
   </div>
@@ -83,6 +85,7 @@
 <script>
 import { gql } from 'graphql-tag'
 import { CBox } from '@chakra-ui/vue'
+
 const GET_PERSON_QUERY = gql`
   query Person($name: String!) {
     person(name: $name) {
@@ -104,9 +107,9 @@ export default {
 
   async asyncData({ app, params }) {
     const client = app.apolloProvider.defaultClient
-    let queryError = false;
+    let queryError = false
 
-    try{
+    try {
       const res = await client.query({
         query: GET_PERSON_QUERY,
         variables: {
@@ -118,43 +121,43 @@ export default {
       console.log(person)
       return {
         person,
-        queryError
+        queryError,
       }
     } catch (err) {
       queryError = true
-      return {queryError}
+      return { queryError }
     }
-
   },
-  data () {
+  data() {
     return {
       mainStyles: {
         dark: {
           bg: 'gray.700',
-          color: 'whiteAlpha.900'
+          color: 'whiteAlpha.900',
         },
         light: {
           bg: 'white',
-          color: 'gray.900'
-        }
+          color: 'gray.900',
+        },
       },
     }
   },
 
   computed: {
-    colorMode () {
+    colorMode() {
       return this.$chakraColorMode()
-    }
+    },
   },
 }
 </script>
 
 <style scoped>
-.character-header{
+.character-header {
   font-family: 'DeathStar', serif !important;
   font-size: xx-large;
 }
-.text{
+
+.text {
   font-family: 'Inter', serif !important;
   font-size: large;
 }
