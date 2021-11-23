@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Star Wars',
+    title: 'Star Wars Search',
     htmlAttrs: {
       lang: 'en'
     },
@@ -35,7 +35,8 @@ export default {
     '@nuxtjs/emotion',
     '@nuxtjs/axios',
     '@nuxtjs/apollo',
-    'nuxt-vuex-localstorage'
+    'nuxt-vuex-localstorage',
+    '@nuxtjs/pwa',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -53,4 +54,17 @@ export default {
       },
     },
   },
+
+  pwa: {
+    icon: {
+      fileName: 'icon.png'
+    },
+    manifest: {
+      name: 'Star Wars Search',
+      short_name: 'Star Wars Search',
+      lang: 'en',
+      description: 'Star Wars Characters Search'
+    }
+  },
+
 }

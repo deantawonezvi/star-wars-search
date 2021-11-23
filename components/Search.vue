@@ -64,7 +64,6 @@ export default {
     CBox,
     CInput,
     CPseudoBox,
-    CIcon
 
   },
   data () {
@@ -89,8 +88,6 @@ export default {
   },
   computed: {
     searchHistory () {
-      console.log(this.$store.state.localStorage.list)
-
       return this.$store.state.localStorage.list
     }
 
@@ -106,20 +103,20 @@ export default {
   methods: {
     async searchKeyword() {
 
-      if (this.searchItem.length < 2) {
+      if (this.searchItem.length < 1) {
         this.showModal = false;
         this.searchResults = [];
         this.searchResults.push(...this.searchHistory)
         return;
       }
 
+      const history = this.searchResults
 
-      this.searchResults = this.searchHistory.filter(obj => {
+
+      this.searchResults = history.filter(obj => {
         return obj.name.toLowerCase().includes(this.searchItem.toLowerCase())
       })
-
-
-
+      this.showModal = true;
 
       const client = this.$apollo.getClient()
 
@@ -156,7 +153,6 @@ export default {
 
     },
     closeResults() {
-      this.searchResults = [];
       this.searchItem = '';
       this.showModal = false
     },
