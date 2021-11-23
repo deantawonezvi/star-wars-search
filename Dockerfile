@@ -1,20 +1,16 @@
-FROM node:lts
-
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/nuxt-app
-
-RUN apk update && apk upgrade
-RUN apk add git
-
-COPY . /usr/src/app/
+FROM node:lts AS builder
+WORKDIR /app
+COPY ./package.json ./
 RUN npm install
-
-
+COPY . .
 RUN npm run build
 
+
+FROM node:lts-alpine
+WORKDIR /app
+COPY --from=builder /app ./
+ENV HOST 0.0.0.0
+ENV PORT 5000
+
 EXPOSE 5000
-
-ENV NUXT_HOST=0.0.0.0
-ENV NUXT_PORT=5000
-
-CMD [ "npm", "start" ]
+CMD ["npm", "start"]
