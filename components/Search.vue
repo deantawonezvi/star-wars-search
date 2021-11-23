@@ -1,5 +1,10 @@
 <template>
-  <CBox w="40vw" mb="3">
+  <CBox  :width="[
+      '90vw', // base
+      '90vw', // 480px upwards
+      '50vw', // 768px upwards
+      '40vw', // 992px upwards
+    ]" mb="3">
     <CInput v-model="chosen" placeholder="Search" @click="showModal = true" @keyup.esc="closeResults" @keyup.enter="searchKeyword" />
 
     <transition name="fade">
@@ -19,7 +24,7 @@
             v-for="person in searchResults"
             :key="person.name"
             :to="`/people/${person.name}`"
-            @click='saveSearchItem(person.name)'
+            @click.native='saveSearchItem(person.name)'
           >
             <CPseudoBox
               mt="2"
