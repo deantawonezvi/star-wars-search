@@ -5,7 +5,7 @@
       '50vw', // 768px upwards
       '40vw', // 992px upwards
     ]" mb="3">
-    <CInput v-model="chosen" placeholder="Search" @click="showModal = true" @keyup.esc="closeResults" @keyup.enter="searchKeyword" />
+    <CInput v-model="searchItem" placeholder="Search" @click="showModal = true" @keyup.esc="closeResults" @keyup.enter="searchKeyword" />
 
     <transition name="fade">
       <CBox
@@ -17,6 +17,19 @@
         p="5"
         mt="2"
       >
+        History
+        <div>
+        <hr>
+        <CPseudoBox
+          mt="2"
+          mb='2'
+          p="3"
+          :_hover="{ bg: 'black', color: 'white', rounded: 'lg' }"
+        >
+          {{searchHistory}}
+        </CPseudoBox>
+        </div>
+        <hr>
         <p>Search Results: {{ searchResults.length }}</p>
         <hr />
         <div>
@@ -26,11 +39,13 @@
             :to="`/people/${person.name}`"
             @click.native='saveSearchItem(person.name)'
           >
+
             <CPseudoBox
               mt="2"
-              p="3"
+              p="2"
               :_hover="{ bg: 'black', color: 'white', rounded: 'lg' }"
             >
+              <CIcon name="search"/>
               {{ person.name }}
             </CPseudoBox>
           </NuxtLink>
@@ -41,7 +56,7 @@
 </template>
 
 <script lang="js">
-import { CBox, CInput,CPseudoBox } from '@chakra-ui/vue'
+import { CBox, CInput,CPseudoBox,CIcon } from '@chakra-ui/vue'
 import { gql } from 'graphql-tag'
 
 const CHARACTERS_BY_NAME_QUERY = gql`
@@ -56,7 +71,8 @@ export default {
   components: {
     CBox,
     CInput,
-    CPseudoBox
+    CPseudoBox,
+    CIcon
 
   },
   data () {
@@ -72,30 +88,39 @@ export default {
           color: 'gray.900'
         }
       },
-      chosen:'',
+      searchItem:'',
       searchResults:[],
 
     }
   },
+  computed: {
+    searchHistory () {
+      console.log(this.$store.state.searchHistory.list)
+
+      return this.$store.state.searchHistory.list
+    }
+  },
   watch:{
-    chosen(oldValue,newValue) {
+    searchItem(oldValue,newValue) {
       console.log(oldValue,newValue)
       this.searchKeyword()
     }
   },
   methods: {
     async searchKeyword() {
-      if (this.chosen.length < 2) {
+      if (this.searchItem.length < 2) {
         this.showModal = false;
         return;
       }
+
+
       const client = this.$apollo.getClient()
 
       try {
         const res = await client.query({
           query    : CHARACTERS_BY_NAME_QUERY,
           variables: {
-            name: this.chosen
+            name: this.searchItem
           },
         });
 
@@ -115,11 +140,11 @@ export default {
     },
     closeResults() {
       this.searchResults = [];
-      this.chosen = '';
+      this.searchItem = '';
       this.showModal = false
     },
     saveSearchItem(name) {
-      console.log(name)
+      this.$store.commit('searchHistory/add', name)
 
     }
   }
