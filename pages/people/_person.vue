@@ -36,6 +36,24 @@
             {{ person.name }}
           </h1>
           <hr>
+          <p>📏</p>
+          <h3 class='text'>Height: {{person.height}}</h3>
+          <br>
+          <p>⚖️</p>
+          <h3 class='text'>Mass: {{person.mass}}</h3>
+          <br>
+
+          <p v-if='person.gender === "male"'>🧑🏽</p>
+          <p v-else-if='person.gender === "female"'>👧🏽</p>
+          <p v-else-if='person.gender === "n/a"'>🤖</p>
+          <p v-else-if='person.gender === "none"'>🧝🏽‍♀️</p>
+          <p v-else>👤</p>
+          <h3 class='text'>Gender: {{person.gender}}</h3>
+
+          <br>
+          <p>🌐</p>
+          <h3 class='text'>Homeworld: {{person.homeworld}}</h3>
+
 
         </CBox>
         <CBox
@@ -138,5 +156,6 @@ export default {
 }
 .text{
   font-family: 'Inter', serif !important;
+  font-size: large;
 }
 </style>
