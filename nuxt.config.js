@@ -35,6 +35,7 @@ export default {
     '@nuxtjs/emotion',
     '@nuxtjs/axios',
     '@nuxtjs/apollo',
+    'nuxt-vuex-localstorage'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

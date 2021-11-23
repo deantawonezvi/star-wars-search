@@ -5,7 +5,11 @@
       '50vw', // 768px upwards
       '40vw', // 992px upwards
     ]" mb="3">
-    <CInput v-model="searchItem" placeholder="Search" @click="showModal = true" @keyup.esc="closeResults" @keyup.enter="searchKeyword" />
+    <div v-if='loading'>
+      Loading...
+    </div>
+    <CInput v-model="searchItem" placeholder="Search" @click="showResults" @keyup.esc="closeResults" @keyup.enter="searchKeyword" />
+
 
     <transition name="fade">
       <CBox
@@ -17,19 +21,6 @@
         p="5"
         mt="2"
       >
-        History
-        <div>
-        <hr>
-        <CPseudoBox
-          mt="2"
-          mb='2'
-          p="3"
-          :_hover="{ bg: 'black', color: 'white', rounded: 'lg' }"
-        >
-          {{searchHistory}}
-        </CPseudoBox>
-        </div>
-        <hr>
         <p>Search Results: {{ searchResults.length }}</p>
         <hr />
         <div>
@@ -45,7 +36,7 @@
               p="2"
               :_hover="{ bg: 'black', color: 'white', rounded: 'lg' }"
             >
-              <CIcon name="search"/>
+            <span v-if='person.history'>🕒️</span>
               {{ person.name }}
             </CPseudoBox>
           </NuxtLink>
@@ -58,6 +49,7 @@
 <script lang="js">
 import { CBox, CInput,CPseudoBox,CIcon } from '@chakra-ui/vue'
 import { gql } from 'graphql-tag'
+import _ from 'lodash'
 
 const CHARACTERS_BY_NAME_QUERY = gql`
     query People($name:String!) {
@@ -90,33 +82,50 @@ export default {
       },
       searchItem:'',
       searchResults:[],
+      client:{},
+      loading:false
 
     }
   },
   computed: {
     searchHistory () {
-      console.log(this.$store.state.searchHistory.list)
+      console.log(this.$store.state.localStorage.list)
 
-      return this.$store.state.searchHistory.list
+      return this.$store.state.localStorage.list
     }
+
   },
   watch:{
-    searchItem(oldValue,newValue) {
-      console.log(oldValue,newValue)
+    searchItem() {
       this.searchKeyword()
     }
   },
+  mounted() {
+    this.searchResults.push(...this.searchHistory)
+  },
   methods: {
     async searchKeyword() {
+
       if (this.searchItem.length < 2) {
         this.showModal = false;
+        this.searchResults = [];
+        this.searchResults.push(...this.searchHistory)
         return;
       }
 
 
+      this.searchResults = this.searchHistory.filter(obj => {
+        return obj.name.toLowerCase().includes(this.searchItem.toLowerCase())
+      })
+
+
+
+
       const client = this.$apollo.getClient()
 
+
       try {
+        this.loading = true
         const res = await client.query({
           query    : CHARACTERS_BY_NAME_QUERY,
           variables: {
@@ -124,9 +133,17 @@ export default {
           },
         });
 
+
         if (res) {
           this.loading = false;
-          this.searchResults = res.data.peopleByKeyWord;
+          this.searchResults.push(...res.data.peopleByKeyWord);
+
+          const results = _.uniqBy(this.searchResults,'name')
+
+          this.searchResults = results.filter(obj => {
+            return obj.name.toLowerCase().includes(this.searchItem.toLowerCase())
+          })
+
         }
       }catch (err) {
         this.loading = false;
@@ -144,8 +161,11 @@ export default {
       this.showModal = false
     },
     saveSearchItem(name) {
-      this.$store.commit('searchHistory/add', name)
+      this.$store.commit('localStorage/add', name)
 
+    },
+    showResults() {
+      this.showModal = true
     }
   }
 
