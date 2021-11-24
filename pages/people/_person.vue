@@ -54,7 +54,7 @@
           <p v-else-if="person.gender === 'n/a'">🤖</p>
           <p v-else-if="person.gender === 'none'">🧝🏽‍♀️</p>
           <p v-else>👤</p>
-          <h3 class="text">Gender: {{ person.gender }}</h3>
+          <h3 class="text">Gender: {{ capitalize(person.gender) }}</h3>
 
           <br />
           <p>🌐</p>
@@ -85,6 +85,7 @@
 <script>
 import { gql } from 'graphql-tag'
 import { CBox } from '@chakra-ui/vue'
+import _ from 'lodash'
 
 const GET_PERSON_QUERY = gql`
   query Person($name: String!) {
@@ -147,6 +148,11 @@ export default {
       return this.$chakraColorMode()
     },
   },
+  methods : {
+    capitalize(word) {
+      return _.capitalize(word)
+    }
+  }
 }
 </script>
 
