@@ -103,7 +103,7 @@ export default {
   },
   computed: {
     searchHistory () {
-      return this.$store.state.localStorage.list
+      return _.reverse(this.$store.state.localStorage.list)
     }
 
   },
@@ -180,6 +180,7 @@ export default {
     },
     clearHistory() {
       this.searchResults = [];
+      this.$store.commit('localStorage/resetState', name)
       return localStorage.removeItem('localStorage')
     }
   }

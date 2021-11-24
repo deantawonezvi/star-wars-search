@@ -16,7 +16,7 @@ export const mutations = {
     state.list.splice(state.list.indexOf(item), 1)
   },
   resetState (state) {
-    Object.assign(state, [])
+    state.list = []
   }
 
 }
