@@ -180,8 +180,7 @@ export default {
     },
     clearHistory() {
       this.searchResults = [];
-      this.$store.commit('localStorage/resetState', name)
-      return localStorage.removeItem('localStorage')
+      return this.$store.commit('localStorage/resetState')
     }
   }
 
