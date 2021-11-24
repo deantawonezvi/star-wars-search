@@ -118,7 +118,6 @@ export default {
       })
 
       const { person } = res.data
-      console.log(person)
       return {
         person,
         queryError,

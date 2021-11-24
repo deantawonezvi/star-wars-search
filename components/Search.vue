@@ -1,15 +1,22 @@
 <template>
-  <CBox  :width="[
+  <CBox
+    :width="[
       '90vw', // base
       '90vw', // 480px upwards
       '50vw', // 768px upwards
       '40vw', // 992px upwards
-    ]" mb="3">
-    <div v-if='loading'>
-      Loading...
-    </div>
-    <CInput v-model="searchItem" focus-border-color="black" placeholder="Search" @click="showResults" @keyup.esc="closeResults" @keyup.enter="searchKeyword" />
-
+    ]"
+    mb="3"
+  >
+    <div v-if="loading">Loading...</div>
+    <CInput
+      v-model="searchItem"
+      focus-border-color="black"
+      placeholder="Search"
+      @click="showResults"
+      @keyup.esc="closeResults"
+      @keyup.enter="searchKeyword"
+    />
 
     <transition name="fade">
       <CBox
@@ -21,25 +28,31 @@
         p="5"
         mt="2"
       >
-        <p class='search'>Search Results: {{ searchResults.length }}</p>
+        <CFlex>
+          <p class="search">Search Results: {{ searchResults.length }}</p>
+        </CFlex>
+
         <hr />
         <div>
           <NuxtLink
             v-for="person in searchResults"
             :key="person.name"
             :to="`/people/${person.name}`"
-            @click.native='saveSearchItem(person.name)'
+            @click.native="saveSearchItem(person.name)"
           >
-
             <CPseudoBox
               mt="2"
               p="2"
               :_hover="{ bg: 'black', color: 'white', rounded: 'lg' }"
             >
-            <span v-if='person.history'>🕒️</span>
-              <span class='search'>{{ person.name }}</span>
+              <span v-if="person.history">🕒️</span>
+              <span class="search">{{ person.name }}</span>
             </CPseudoBox>
           </NuxtLink>
+        </div>
+        <hr />
+        <div v-if="searchHistory.length > 0">
+          <CButton variant-color="red" m='2' size="sm" @click="clearHistory">Clear History</CButton>
         </div>
       </CBox>
     </transition>
@@ -47,7 +60,7 @@
 </template>
 
 <script lang="js">
-import { CBox, CInput,CPseudoBox } from '@chakra-ui/vue'
+import { CBox, CInput,CPseudoBox,CFlex,CButton } from '@chakra-ui/vue'
 import { gql } from 'graphql-tag'
 import _ from 'lodash'
 
@@ -64,6 +77,8 @@ export default {
     CBox,
     CInput,
     CPseudoBox,
+    CFlex,
+    CButton
 
   },
   data () {
@@ -162,6 +177,10 @@ export default {
     },
     showResults() {
       this.showModal = true
+    },
+    clearHistory() {
+      this.searchResults = [];
+      return localStorage.removeItem('localStorage')
     }
   }
 
@@ -169,7 +188,7 @@ export default {
 </script>
 
 <style scoped>
-.search{
+.search {
   font-family: 'Inter', serif !important;
 }
 .fade-enter-active,
